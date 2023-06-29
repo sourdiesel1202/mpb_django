@@ -16,3 +16,9 @@ config.*
 migrations/
 *test.py
 terp_django/settings.py
+
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

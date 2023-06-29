@@ -8,12 +8,12 @@ Django==4.2.2
 filelock==3.10.4
 Jinja2==3.1.2
 MarkupSafe==2.1.2
-mysqlclient==2.2.0
+
 packaging==23.0
 pkgconfig==1.5.5
 platformdirs==3.1.1
 pycparser==2.21
-PyMySQL==1.1.0
+
 PyYAML==6.0
 resolvelib==0.8.1
 sqlparse==0.4.4
