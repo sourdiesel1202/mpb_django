@@ -13,7 +13,9 @@ class Strain(models.Model):
     image = models.TextField(max_length=500, null=False)
     # image = models.TextField(max_length=500, null=False)
     terpenes = models.ManyToManyField("terpenes.Terpene", null=True, blank=True)
+    effects = models.ManyToManyField("terpenes.Effect", null=True, blank=True)
+    aromas = models.ManyToManyField("terpenes.Aroma", null=True, blank=True)
     type = models.CharField(choices=(('Indica', 'Indica'), ('Sativa', 'Sativa'), ('Hybrid', 'Hybrid')),default='Hybrid', max_length=150)
 
     def __str__(self):
-        return f"{self.name}: {self.emoji}"
+        return f"{self.name}: {self.type}"

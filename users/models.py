@@ -19,6 +19,7 @@ class User(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     followers = models.ManyToManyField("self", null=True, blank=True)
     following = models.ManyToManyField("self", null=True, blank=True)
+    # message_threads = models.ManyToManyField("terp_messages.MessageThread", null=True, blank=True)
     creation_date = models.DateTimeField(null=True, default=now)
     def __str__(self):
         return f"{self.username}: {self.first_name} {self.last_name}"
@@ -26,6 +27,7 @@ class User(models.Model):
 class UserAchievement(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
+    creation_date = models.DateTimeField(null=True, default=now)
 
 # #the action to take on the report, passing report history. only called when scheduled
 # class ReportAction(CodeModel):
