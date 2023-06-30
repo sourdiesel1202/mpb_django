@@ -7,7 +7,7 @@ For more information on this file, see
 https://docs.djangoproject.com/en/4.1/howto/deployment/wsgi/
 """
 
-0import os
+import os
 
 from django.core.wsgi import get_wsgi_application
 
