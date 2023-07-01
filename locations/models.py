@@ -35,9 +35,9 @@ class LocationCity(models.Model):
 class Location(models.Model):
     # name = models.CharField(max_length=150, null=False)
     # emoji = models.CharField(max_length=2, null=False)
-    county = models.ForeignKey(LocationCountry, on_delete=models.CASCADE)
+    country = models.ForeignKey(LocationCountry, on_delete=models.CASCADE)
     state = models.ForeignKey(LocationState, on_delete=models.CASCADE)
     city = models.ForeignKey(LocationCity, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.county}: {self.state}: {self.city}"
+        return f"{self.country}: {self.state}: {self.city}"
