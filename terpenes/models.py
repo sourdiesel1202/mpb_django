@@ -10,11 +10,14 @@ class Aroma(models.Model):
     description = models.TextField(max_length=500, null=False)
     image = models.TextField(max_length=500, null=False)
 
+    def __str__(self):
+        return  self.name
 class Effect(models.Model):
     name = models.CharField(max_length=150, null=False)
     description = models.TextField(max_length=500, null=False)
     image = models.TextField(max_length=500, null=False)
-
+    def __str__(self):
+        return  self.name
 
 class Terpene(models.Model):
     name = models.CharField(max_length=150, null=False)
@@ -24,6 +27,8 @@ class Terpene(models.Model):
     effects = models.ManyToManyField("terpenes.Effect", null=True, blank=True)
     def __str__(self):
         return f"{self.name}"
+    def __str__(self):
+        return  self.name
 
 
 class TerpeneProfile(models.Model):
@@ -31,3 +36,5 @@ class TerpeneProfile(models.Model):
     aromas = models.ManyToManyField("terpenes.Aroma", null=True, blank=True)
     effects = models.ManyToManyField("terpenes.Effect", null=True, blank=True)
     terpenes = models.ManyToManyField("terpenes.Terpene", null=True, blank=True)
+    def __str__(self):
+        return  f"{self.user.username}"
