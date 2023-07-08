@@ -21,5 +21,5 @@ class MessageThread(models.Model):
     # sender = models.ForeignKey(User, on_delete=models.CASCADE)
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sender")
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="receiver")
-    messages = models.ManyToManyField("terp_messages.Message", null=True, blank=True)
+    messages = models.ManyToManyField("terp_messages.Message", symmetrical=False)
     creation_date = models.DateTimeField(null=True, default=now)

@@ -17,8 +17,8 @@ class User(models.Model):
     last_name = models.CharField(max_length=150, null=False)
     image = models.TextField(max_length=50, null=False)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    followers = models.ManyToManyField("self", null=True, blank=True)
-    following = models.ManyToManyField("self", null=True, blank=True)
+    followers = models.ManyToManyField("self" )
+    following = models.ManyToManyField("self")
     # message_threads = models.ManyToManyField("terp_messages.MessageThread", null=True, blank=True)
     creation_date = models.DateTimeField(null=True, default=now)
     def __str__(self):

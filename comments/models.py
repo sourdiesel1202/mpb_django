@@ -10,5 +10,5 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField(max_length=500, null=False)
     image = models.TextField(max_length=500, null=False)
-    replies = models.ManyToManyField("self", null=True, blank=True)
+    replies = models.ManyToManyField("self", symmetrical=False)
     creation_date = models.DateTimeField(null=True, default=now)

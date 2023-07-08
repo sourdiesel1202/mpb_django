@@ -1,4 +1,5 @@
 import json
+import time
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
@@ -6,6 +7,7 @@ from django.conf import settings
 from locations.models import Location,LocationCity,LocationState,LocationCountry
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        start_time = time.time()
         with open(f"{settings.BASE_DIR}/json/locations.json") as f:
             # terpene_records = json.loads(f.read())
 
@@ -46,4 +48,5 @@ class Command(BaseCommand):
                     location.city=city
                     location.save()
                     print(f"Wrote new location {location.city.name}, {location.state.name} {location.country.name} {location.country.emoji}")
+        print(f"\nCompleted location load in {int((int(time.time()) - start_time) / 60)} minutes and {int((int(time.time()) - start_time) % 60)} seconds")
 
