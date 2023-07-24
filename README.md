@@ -1,1 +1,3 @@
-# terp_django
+# mpb django
+
+Django UI for MPB Traders

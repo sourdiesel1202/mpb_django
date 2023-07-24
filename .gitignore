@@ -15,7 +15,7 @@ config.*
 *.pyc
 migrations/
 *test.py
-terp_django/settings.py
+mpb_django/settings.py
 
 
 # Elastic Beanstalk Files
