@@ -3,8 +3,8 @@ from datetime import datetime
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.timezone import now
-from locations.models import Location
-from achievements.models import Achievement
+# from locations.models import Location
+# from achievements.models import Achievement
 # from taggit.managers import TaggableManager
 
 
@@ -15,19 +15,19 @@ class User(models.Model):
     username = models.CharField(max_length=150, null=False)
     first_name = models.CharField(max_length=150, null=False)
     last_name = models.CharField(max_length=150, null=False)
-    image = models.TextField(max_length=50, null=False)
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    followers = models.ManyToManyField("self" )
-    following = models.ManyToManyField("self")
+    # image = models.TextField(max_length=50, null=False)
+    # location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    # followers = models.ManyToManyField("self" )
+    # following = models.ManyToManyField("self")
     # message_threads = models.ManyToManyField("terp_messages.MessageThread", null=True, blank=True)
     creation_date = models.DateTimeField(null=True, default=now)
     def __str__(self):
         return f"{self.username}: {self.first_name} {self.last_name}"
 
-class UserAchievement(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
-    creation_date = models.DateTimeField(null=True, default=now)
+# class UserAchievement(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
+#     creation_date = models.DateTimeField(null=True, default=now)
 
 # #the action to take on the report, passing report history. only called when scheduled
 # class ReportAction(CodeModel):
