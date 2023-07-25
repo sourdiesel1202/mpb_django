@@ -18,6 +18,7 @@ from django.urls import path, include
 from mpb_django import views
 urlpatterns = [
     path('', views.index),
+    path('<str:timespan_multiplier>/<str:timespan>/dashboard', views.dashboard),
     path('admin/', admin.site.urls),
     path('tickers/', include('tickers.urls')),
     # path('<int:report_id>/get', views.get_report, name='get_report'),

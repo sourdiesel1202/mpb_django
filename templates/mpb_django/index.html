@@ -16,7 +16,9 @@
     <h1 class=""><b>Time Frames</b></h1>
     <div id="notifications">{% if timeframes|length > 0%}
       {% for timeframe in timeframes %}
-      <div style="outline: 2px solid lightgray; id='notifications[]'"><h4 class="w3-center">test</h4>
+      <div class="w3-hover-black" style="outline: 2px solid lightgray;"><a onclick="changeTheme(getTheme());" href="/{{ timeframe.timespan_multiplier }}/{{ timeframe.timespan }}/dashboard" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+        <h5 class="w3-center">{{ timeframe.timespan_multiplier }} {{ timeframe.timespan }}</h5>
+      </a>
 <!--        {{notification.creation_date}}<br>{{notification.description|safe}}-->
       </div>
       <br><br>
