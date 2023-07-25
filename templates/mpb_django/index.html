@@ -13,10 +13,11 @@
 
   <!-- About Section -->
   <div class="w3-content w3-justify w3-padding-64 w3-center">
-    <h1 class=""><b>Time Frames</b></h1>
+    <h2 class=""><b>Timespans</b></h2>
+    <h5 class=""><b>View MPB alerting stocks by timespan</b></h5><br>
     <div id="notifications">{% if timeframes|length > 0%}
       {% for timeframe in timeframes %}
-      <div class="w3-hover-black" style="outline: 2px solid lightgray;"><a onclick="changeTheme(getTheme());" href="/{{ timeframe.timespan_multiplier }}/{{ timeframe.timespan }}/dashboard" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+      <div id="timespan" class="" style="outline: 2px solid lightgray;"><a onclick="changeTheme(getTheme());" href="/{{ timeframe.timespan_multiplier }}/{{ timeframe.timespan }}/dashboard" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
         <h5 class="w3-center">{{ timeframe.timespan_multiplier }} {{ timeframe.timespan }}</h5>
       </a>
 <!--        {{notification.creation_date}}<br>{{notification.description|safe}}-->
