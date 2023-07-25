@@ -47,13 +47,62 @@ class TimespanMultiplier:
     THIRTY = "30"
 
 class ValidationType:
-    SMA = 'sma'
-    MACD = 'macd'
-    DMI = 'dmi'
-    ADX = 'adx'
-    RSI = 'rsi'
+    SMA = 'SMA'
+    MACD = 'MACD'
+    DMI = 'DMI'
+    ADX = 'ADX'
+    RSI = 'RSI'
 
 
+class StrategyType:
+
+    LONG_CALL = "LONG_CALL"
+    LONG_PUT = "LONG_PUT"
+    LONG_STRADDLE = "LONG_STRADDLE"
+    LONG_STRANGLE = "LONG_STRANGLE"
+    COLLAR = "COLLAR"
+    SHORT_PUT = "SHORT_PUT"
+    SHORT_CALL = "SHORT_CALL"
+    SHORT_STRANGLE = "SHORT_STRANGLE"
+    SHORT_STRADDLE = "SHORT_STRADDLE"
+    LONG_CALL_SPREAD = "LONG_CALL_SPREAD"
+    SHORT_CALL_SPREAD = "SHORT_CALL_SPREAD"
+    LONG_PUT_SPREAD = "LONG_PUT_SPREAD"
+    SHORT_PUT_SPREAD = "SHORT_PUT_SPREAD"
+    IRON_BUTTERFLY = "IRON_BUTTERFLY"
+    IRON_CONDOR = "IRON_CONDOR"
+
+    #shorts
+    # SHORT_STRADDLE = "SHORT_STRADDLE"
+class TickerType:
+    STOCK = "STOCK"
+    OPTION = "OPTION"
+    FUTURE = "FUTURE" #some day
+
+ticker_types = [
+    TickerType.STOCK,
+    TickerType.OPTION,
+    TickerType.FUTURE
+]
+
+strategy_types= [
+    StrategyType.LONG_PUT,
+    StrategyType.LONG_PUT,
+    StrategyType.LONG_CALL_SPREAD,
+    StrategyType.LONG_PUT_SPREAD,
+    StrategyType.IRON_BUTTERFLY,
+    StrategyType.IRON_CONDOR,
+    StrategyType.LONG_STRANGLE,
+    StrategyType.LONG_STRADDLE,
+    StrategyType.COLLAR,
+    StrategyType.SHORT_CALL,
+    StrategyType.SHORT_PUT,
+    StrategyType.SHORT_PUT_SPREAD,
+    StrategyType.SHORT_CALL_SPREAD,
+    StrategyType.SHORT_STRANGLE,
+    StrategyType.SHORT_STRADDLE
+
+]
 validation_types = [
     ValidationType.ADX,
     ValidationType.DMI,

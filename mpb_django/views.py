@@ -7,6 +7,10 @@ from django.db import connection
 from datetime import  datetime
 from django.template import loader
 import traceback
+
+from dashboard.functions import build_dashboard_django
+
+
 def index(request):
     template = loader.get_template('mpb_django/index.html')
     # reports= Report.objects.all().order_by('name')
@@ -33,6 +37,9 @@ def index(request):
 
 
 def dashboard(request, timespan_multiplier,timespan):
+
+    #ok here is where we're gonna do the fuckery to load the dashboard, freaking a dude
+    #hey dumbass, write the report in sql
     template = loader.get_template('mpb_django/dashboard.html')
     # reports= Report.objects.all().order_by('name')
     # print(reports)
@@ -43,6 +50,6 @@ def dashboard(request, timespan_multiplier,timespan):
     #         report_schedules[report.name]=_report_schedules
     # print(report_schedules)
     context = {
-        "timeframes":[]
+        "dashboard_html":build_dashboard_django(connection, timespan, timespan_multiplier)
     }
     return HttpResponse(template.render(context, request))

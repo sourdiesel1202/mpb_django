@@ -29,6 +29,8 @@ function changeTheme(theme){
         $('td').addClass('w3-dark-grey w3-text-white ');
         $('th').addClass('w3-black w3-text-white ');
         $('#theme').removeClass('w3-light-grey w3-red w3-green');
+        $('#timespan').removeClass('w3-hover-black w3-hover-dark-grey');
+        $('#timespan').addClass('w3-w3-hover-dark-grey');
         $('#theme').addClass('w3-green');
         $(':input[type=button]').removeClass('w3-red w3-green')
         $(':input[type=button]').addClass('w3-green')
@@ -52,6 +54,10 @@ function changeTheme(theme){
         $('td').removeClass('w3-dark-grey');
         $('tr').removeClass('w3-dark-grey');
         $('th').removeClass('w3-green');
+        $('#timespan').removeClass('w3-hover-black w3-hover-dark-grey');
+        $('#timespan').addClass('w3-w3-hover-black');
+        $('#timespan').removeClass('w3-hover-black w3-hover-dark-grey');
+        $('#timespan').addClass('w3-w3-hover-dark-grey');
         $('nav').addClass('w3-sidebar w3-bar-block w3-small w3-hide-small w3-center');
         $('nav').addClass('w3-white w3-text-black');
         $('tr').addClass('w3-white w3-text-black ');
@@ -83,6 +89,8 @@ function changeTheme(theme){
         $('nav').removeClass();
         $('td').removeClass('w3-dark-grey');
         $('tr').removeClass('w3-dark-grey');
+        $('#timespan').removeClass('w3-hover-black w3-hover-dark-grey');
+        $('#timespan').addClass('w3-w3-hover-black');
         $('nav').addClass('w3-sidebar w3-bar-block w3-small w3-hide-small w3-center');
         $('nav').addClass('w3-green w3-text-white');
         $('tr').addClass('w3-white w3-text-black ');
@@ -118,7 +126,8 @@ function changeTheme(theme){
         $('tr').addClass('w3-white w3-text-black ');
         $('td').addClass('w3-white w3-text-black ');
         $('th').addClass('w3-red w3-text-white ');
-
+        $('#timespan').removeClass('w3-hover-black w3-hover-dark-grey');
+        $('#timespan').addClass('w3-w3-hover-red');
         $('#theme').removeClass('w3-light-grey w3-red w3-green');
         $('#theme').addClass('w3-light-grey');
         $(':input[type=button]').removeClass('w3-red w3-green')

@@ -2,6 +2,7 @@ import datetime
 import json, csv, os
 import multiprocessing
 import time
+import traceback
 from zoneinfo import ZoneInfo
 
 
@@ -99,3 +100,23 @@ def process_list_concurrently(data, process_function, batch_size):
         print(f"The following child processes are still running: {process_str}")
         time.sleep(10)
     return pids
+
+
+def execute_query(connection,sql, verbose=True):
+    cursor = connection.cursor()
+    try:
+        if verbose:
+            print(f"Executing\n{sql}")
+        cursor.execute(sql)
+        result= []
+        result.append([row[0] for row in cursor.description])
+        for row in cursor.fetchall():
+            result.append([str(x) for x in row])
+        if verbose:
+            print(f"{len(result)-1} rows returned")
+        cursor.close()
+        return result
+
+    except:
+        cursor.close()
+        traceback.print_exc()
