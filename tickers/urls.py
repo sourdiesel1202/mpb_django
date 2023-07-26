@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('<str:timespan_multiplier>/<str:timespan>/<str:ticker>', views.view_ticker_chart),
     # path('<int:report_id>/get', views.get_report, name='get_report'),
     # path('<int:report_id>/view_history', views.view_history, name='view_history'),
     # path('<int:report_id>/view_actions', views.view_actions, name='view_actions'),

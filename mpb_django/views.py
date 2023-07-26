@@ -41,14 +41,7 @@ def dashboard(request, timespan_multiplier,timespan):
     #ok here is where we're gonna do the fuckery to load the dashboard, freaking a dude
     #hey dumbass, write the report in sql
     template = loader.get_template('mpb_django/dashboard.html')
-    # reports= Report.objects.all().order_by('name')
-    # print(reports)
-    # report_schedules ={}
-    # for report in reports:
-    #     _report_schedules = [x for x in ReportSchedule.objects.filter(report=report)]
-    #     if len(_report_schedules) > 0:
-    #         report_schedules[report.name]=_report_schedules
-    # print(report_schedules)
+
     context = {
         "dashboard_html":build_dashboard_django(connection, timespan, timespan_multiplier)
     }

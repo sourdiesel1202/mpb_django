@@ -4,12 +4,12 @@ import multiprocessing
 import time
 import traceback
 from zoneinfo import ZoneInfo
+from config.models import ConfigurationJSON
 
-
-def load_module_config(module):
-    print(f"Loading config file for {module}")
-    with open(f"configs/{module}.json", "r") as f:
-        return json.loads(f.read())
+# def load_module_config(module):
+#     print(f"Loading config file for {module}")
+#     with open(f"configs/{module}.json", "r") as f:
+#         return json.loads(f.read())
 
 def write_csv(filename, rows):
     with open(filename  , 'w', newline='') as f:
@@ -120,3 +120,6 @@ def execute_query(connection,sql, verbose=True):
     except:
         cursor.close()
         traceback.print_exc()
+
+def load_module_config(name):
+    return json.loads(ConfigurationJSON.objects.get(name=name).value)
