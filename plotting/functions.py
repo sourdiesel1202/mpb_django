@@ -18,13 +18,16 @@ def plot_ticker_with_indicators(ticker, ticker_history, indicator_data, module_c
     df = load_ticker_history_pd_frame(ticker, ticker_history[-module_config['plot_bars']:], convert_to_datetime=True, human_readable=True)
     subplot_titles = [x  for x in indicator_data.keys() if not indicator_data[x]['overlay']]
     # candle_fig  = make_subplots(rows=len([not x['overlay'] for x in indicator_data.values()]), cols=2, subplot_titles=subplot_titles)
+    titles = [f"${ticker}"]
     candle_fig = go.Figure(data=[go.Candlestick(x=df['date'],
                                          open=df['open'], high=df['high'],
                                          low=df['low'], close=df['close'],name=ticker)] )
     r = 1
     # c =2
     indicator_figure = make_subplots(rows=len([not x['overlay'] for x in indicator_data.values()]), cols=1, subplot_titles=subplot_titles)
+    figures = []
     for key,x in indicator_data.items():
+
         if x['overlay']:
             if type(x['plot']) not in [list, tuple]:
                 candle_fig.add_trace(x['plot'])
@@ -36,12 +39,21 @@ def plot_ticker_with_indicators(ticker, ticker_history, indicator_data, module_c
                     else:
                         candle_fig.add_shape(x['plot'][i])
         else:
+            titles.append(key)
             if type(x['plot']) not in [list,tuple]:
-                indicator_figure.add_trace(x['plot'], row=r, col=1)
+                # indicator_figure.add_trace(x['plot'], row=r, col=1)
+                f = go.Figure(data=x['plot'])
+                f.add_trace(x['plot'])
+                figures.append(f)
+                # figures[-1].add_trace()
             else:
-                for i in range(0, len(x['plot'])):
-                    indicator_figure.add_trace(x['plot'][i], row=r, col=1)
+                figures.append(go.Figure(data=x['plot'][0]))
+                for i in range(1, len(x['plot'])):
+
+                    figures[-1].add_trace(x['plot'][i])
+                    # indicator_figure.add_trace(x['plot'][i], row=r, col=1)
             r = r + 1
+    figures.insert(0, candle_fig)
     candle_fig.update_layout(xaxis_rangeslider_visible=False, xaxis=dict(type="date"))
     min_percent=(50/100)*min([x.low for x in ticker_history])
     max_percent=(50/100)*max([x.low for x in ticker_history])
@@ -54,7 +66,8 @@ def plot_ticker_with_indicators(ticker, ticker_history, indicator_data, module_c
         ])
     # candle_fig.show()
     # indicator_figure.show()
-    return figures_to_html(ticker, [candle_fig, indicator_figure])
+    # return figures_to_html(ticker, [candle_fig, indicator_figure])
+    return figures_to_html(figures, titles)
 
 
 def plot_indicator_data(ticker, ticker_history,indicator_data, module_config, name='', color='blue', max=100):
@@ -105,15 +118,19 @@ def plot_sr_lines(ticker, ticker_history,indicator_data, module_config):
     return lines
 
 
-def figures_to_html(ticker,figs):
+def figures_to_html(figs, titles):
     # with open(filename, 'w') as dashboard://
-    # dashboard = ""
-    dashboard = f"<h2>${ticker}</h2>" + "\n"
-    for fig in figs:
+    dashboard = ""
+    # dashboard = f"<h2>${ticker}</h2>" + "\n"
+    if len(titles) == len(figs):
+        # for fig in figs:
+        for i in range(0, len(figs)):
 
-        inner_html = fig.to_html().split('<body>')[1].split('</body>')[0]
-        # print(inner_html+"\n\n\n")
-        dashboard = dashboard + inner_html+"<br><br>"
+            inner_html = figs[i].to_html().split('<body>')[1].split('</body>')[0]
+            # print(inner_html+"\n\n\n")
+            dashboard = dashboard +f"<h2>{titles[i]}</h2>" + inner_html+"<br>"
+    else:
+        raise Exception("Must input same number of titles as figures")
     # dashboard.write("</body></html>" + "\n")
     with open("dumb.html", 'w') as f:
         f.write(dashboard)

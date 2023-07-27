@@ -33,7 +33,10 @@ def build_dashboard(mpb_data, timespan, timespan_multiplier):
 
     # mpb_data = read_csv("mpb.csv")
     # [x.split(".csv")[0] for x in os.listdir(f"{module_config['output_dir']}cached/")]
-    tabulator_data = build_tabulator_basic_data(mpb_data)
     date_string = max([human_readable_datetime(timestamp_to_datetime(int(x[0]))) for x in mpb_data[1:]])
     type = f"{timespan_multiplier} "+timespan[0].upper()+timespan[1:]
+    for i in range(1, len(mpb_data)):
+        # print(f"{human_readable_datetime(timestamp_to_datetime(mpb_data[i][0]))}")
+        mpb_data[i][0]=human_readable_datetime(timestamp_to_datetime(mpb_data[i][0]))
+    tabulator_data = build_tabulator_basic_data(mpb_data)
     return dashboard_template.replace("//replace_me_with_output", f"var tabledata = {json.dumps(tabulator_data)}").replace("{{report.name}}", f"MPB Traders Report<br>{type}<br>{date_string.split(' ')[0]}<br>{date_string.split(' ')[1]}<br>")
