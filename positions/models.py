@@ -5,7 +5,7 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 
 from mpb_django.functions import timestamp_to_datetime
-from mpb_django.enums import position_types
+from mpb_django.enums import position_types, strategy_types
 from history.models import  TickerHistory
 from tickers.models import Contract
 
@@ -19,10 +19,10 @@ from tickers.models import Contract
 
 class TickerPosition(models.Model):
     ticker_history = models.ForeignKey(TickerHistory,null=False, on_delete=models.CASCADE)
-    position_type = models.CharField(choices=((x,x) for x in position_types),null=False, max_length=500)
+    strategy_type = models.CharField(choices=((x,x) for x in strategy_types),null=False, max_length=500, default=strategy_types[0])
 
     def __str__(self):
-        return f"{self.ticker_history.ticker.symbol}: {self.position_type}"
+        return f"{self.ticker_history.ticker.symbol}: {self.strategy_type}"
 
 
 class TickerPositionContract(models.Model):

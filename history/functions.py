@@ -48,3 +48,6 @@ def load_ticker_history_pd_frame(ticker, ticker_history, convert_to_datetime=Fal
     _str = generate_csv_string(load_ticker_history_csv(ticker,ticker_history,convert_to_datetime=convert_to_datetime, human_readable=human_readable))
     df = pd.read_csv(io.StringIO(_str), sep=",")
     return df
+
+def load_timespan_last_updated(connection, timespan, timespan_multiplier):
+    return execute_query(connection, f"select coalesce(max(timestamp), round(1000 * unix_timestamp(date_sub(now(), interval 365 day)))) from history_tickerhistory where timespan='{timespan}' and timespan_multiplier='{timespan_multiplier}'")[1][0]

@@ -88,6 +88,7 @@ $(document).ready(function(){
 <div class="w3-center">
 
             <div id="report_div"><h3 class="">{{report.name}}</h3>
+            <p>This report shows tickers that fired alerts on the close of the previous bar. Price targets, validations, etc are based upon current bar data. If the report contains no records, no tickers were found to have alerted on the close of the prior bar</p>
             <img src="https://thumbs.gfycat.com/OblongAntiqueAmurratsnake-size_restricted.gif" width="100" height="100"
              id="report_table_loading">
         <div class=" w3-center" id="report_table"></div>
