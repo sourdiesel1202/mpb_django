@@ -1,3 +1,5 @@
+import random
+
 from django.db import models
 from datetime import datetime
 from django.utils import timezone
@@ -20,9 +22,24 @@ from tickers.models import Contract, Ticker
 class SimilarLine(models.Model):
     ticker_history = models.ForeignKey(TickerHistory,null=False, on_delete=models.CASCADE)
     ticker = models.ForeignKey(Ticker,null=False, on_delete=models.CASCADE)
-
+    forward_range = models.IntegerField(default=4, null=False)
+    backward_range = models.IntegerField(default=10, null=False)
     def __str__(self):
         return f"{self.ticker_history.ticker.symbol}:{self.ticker_history.timestamp}: Similar Line: {self.ticker.symbol}"
+
+class ProfitableLineType(models.Model):
+    # line_type = models.IntegerField(default=1, null=False)
+    name = models.CharField(null=False, max_length=250, default=f"Profitable Line", unique=True)
+
+
+class ProfitableLine(models.Model):
+    histories = models.ManyToManyField("history.TickerHistory", symmetrical=False)
+    forward_range = models.IntegerField(default=4, null=False)
+    backward_range = models.IntegerField(default=10, null=False)
+    profit_percentage = models.FloatField(default=0.0, null=False)
+    line_type = models.ForeignKey(ProfitableLineType, on_delete=models.CASCADE)
+    # def __str__(self):
+        # return f"{self.ticker_history.ticker.symbol}:{self.ticker_history.timestamp}: Similar Line: {self.ticker.symbol}"
 
 
 # class TickerPositionContract(models.Model):
