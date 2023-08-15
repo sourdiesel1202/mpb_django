@@ -67,7 +67,7 @@ body.loading .overlay{
 <nav >
     <!-- Avatar image in top left corner -->
 
-    <h5>MPB Traders</h5>
+    <h5>MPB<br>Traders</h5>
 <br>Selected Theme<br>
     <select name="theme" id="theme" onchange="changeTheme($(this).val());" class="w3-round w3-blue" >
         <option value="darkstar" selected>Dark Star</option>
@@ -83,9 +83,12 @@ body.loading .overlay{
         <p><b>Home</b></p>
     </a>
 
-      <a onclick="changeTheme(getTheme());" href="{{ link.location }}" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
-        <p><b>Ticker List</b></p>
+{% for link in navigation_links %}
+    <a onclick="changeTheme(getTheme());" href="{{ link.location }}" class="w3-bar-item w3-button w3-padding-large w3-hover-black">
+        <p><b>{{link.name}}</b></p>
       </a>
+
+    {% endfor %}
 
 </nav>
 

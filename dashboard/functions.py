@@ -28,6 +28,24 @@ def build_dashboard_django(connection, timespan, timespan_multiplier):
     #     for row in cursor.fetchall():
     #         timespans.append({'timespan_multiplier':row[0],'timespan':row[1]})
     # pass
+
+def build_dashboard_iv_hunter(connection, timespan, timespan_multiplier):
+    query = f"""select * from (select from_unixtime(ch.timestamp/1000) date, t.symbol,tc.strike_price,tc.type,tc.expry, max(ch.implied_volatility) implied_volatility
+from history_contracthistory ch,
+     tickers_contract tc,
+     tickers_ticker t,
+     (select ch.contract_id,   max(ch.timestamp) latest from history_contracthistory ch  group by ch.contract_id) latest_contracts
+where
+  (ch.contract_id=latest_contracts.contract_id and ch.timestamp =latest_contracts.latest)
+  and t.id = tc.ticker_id
+  and tc.id = ch.contract_id
+ and ch.timespan_multiplier='{timespan_multiplier}' and  ch.timespan='{timespan_multiplier}'
+group by from_unixtime(ch.timestamp/1000),t.symbol,tc.strike_price,tc.type,tc.expry ) iv_table order by implied_volatility desc"""
+    # results =
+    # return build_dashboard(connection, execute_query(connection, query), timespan, timespan_multiplier).replace("MPB Traders Report", "IV Hunter")
+    return dashboard_template.replace("//replace_me_with_output",f"var tabledata = {json.dumps(tabulator_data)}").replace("{{report.name}}",f"MPB Traders Report<br>{timespan_multiplier} {timespan[0].upper() + timespan[1:]}<br>{date_string.split(' ')[0]}<br>{date_string.split(' ')[1]}<br>")
+
+
 def build_dashboard(connection, mpb_data, timespan, timespan_multiplier):
     # with open('html/head.html') as f:
     #     raw_html = f.read()

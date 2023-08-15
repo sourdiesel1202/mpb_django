@@ -1,3 +1,4 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.timezone import now
 class Configuration(models.Model):#config class, stores kv pairs
@@ -23,3 +24,14 @@ class NavigationLink(models.Model):
 
     def __str__(self):
         return f"{self.name} {self.location}"
+
+
+class CodeModel(models.Model):
+    name = models.CharField(max_length=250, null=False)
+    description = models.CharField(max_length=500, null=False, default="Please add a description")
+    creation_date = models.DateTimeField(default=now)
+    attributes = models.TextField(null=False, default='{}', help_text='json attributes')
+    code = models.TextField(null=True, default="print('Hello, world!')",help_text='Python Code To Execute')
+    # criticality = models.IntegerField(default=5, validators=[MaxValueValidator(5), MinValueValidator(1)])
+    class Meta:
+       abstract = True

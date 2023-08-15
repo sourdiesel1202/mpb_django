@@ -46,6 +46,17 @@ class TimespanMultiplier:
     FIFTEEN = "15"
     THIRTY = "30"
 
+time_frames = [
+    {
+        "timespan": Timespan.HOUR,
+        "timespan_multiplier": TimespanMultiplier.ONE
+    },
+    {
+        "timespan": Timespan.MINUTE,
+        "timespan_multiplier": TimespanMultiplier.THIRTY
+    }
+]
+
 class ValidationType:
     SMA = 'SMA'
     MACD = 'MACD'
