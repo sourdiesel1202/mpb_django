@@ -2,10 +2,11 @@ import random,json
 # from config.classes import OracleConnector, MySQLConnector, LDAPConnector, APIConnector,PostgreGreenplumConnector
 # from config.models import  Connection, API_CONNECTOR_TYPE, ORACLE_CONNECTOR_TYPE,LDAP_CONNECTOR_TYPE,MYSQL_CONNECTOR_TYPE,POSTGRE_CONNECTOR_TYPE
 import numpy, traceback
+from django.db import connection
 # from tasks.functions import create_alert
 from django.utils import timezone
 
-from .models import ReportHistory
+# from .models import ReportHistory
 # timezone.now()
 def random_color():
     return "%06x" % random.randint(0, 0xFFFFFF)
@@ -97,11 +98,27 @@ def run_report(report):
     # mysql_conn.open_connection()
     error = False
     try:
-        pass
-        # mysql_conn.run_report(report)
+        # timespans = []
+        # results = []
+        with connection.cursor() as cursor:
+            # query = """
+            #     select distinct timespan_multiplier, timespan from history_tickerhistory
+            #     """
+            print(report.code)
+            cursor.execute(report.code)
+            # cursor.execute(sql)
+            results = []
+            results.append([row[0] for row in cursor.description])
+            print(','.join(results[0]))
+            for row in cursor.fetchall():
+                results.append([str(x) for x in row])
+
+        return results
+    # mysql_conn.run_report(report)
         # mysql_conn.close_connection()
     except:
-        pass
+        traceback.print_exc()
+        error=True
         # error=True
         # mysql_conn.close_connection()
     if error:

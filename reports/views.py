@@ -4,7 +4,7 @@ import json,os
 from django.utils import timezone
 
 from .functions import random_color, run_report as run_report_task, build_chartjs_line_data, build_chartjs_bar_data, build_chartjs_pie_data,build_tabulator_basic_data
-from .models import Report, ReportHistory, ReportSchedule, ReportAction, ReportActionHistory
+from .models import Report
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from datetime import  datetime
 from django.template import loader
@@ -14,52 +14,53 @@ from django.http import FileResponse
 import traceback
 def index(request):
     template = loader.get_template('reports/index.html')
-    reports= Report.objects.all().order_by('name')
-    # print(reports)
-    report_schedules ={}
-    for report in reports:
-        _report_schedules = [x for x in ReportSchedule.objects.filter(report=report)]
-        if len(_report_schedules) > 0:
-            report_schedules[report.name]=_report_schedules
-    print(report_schedules)
-    context = {
-        'reports': reports,
-        'report_schedules':report_schedules
-    }
-    return HttpResponse(template.render(context, request))
+    # reports= Report.objects.all().order_by('name')
+    # # print(reports)
+    # report_schedules ={}
+    # for report in reports:
+    #     _report_schedules = [x for x in ReportSchedule.objects.filter(report=report)]
+    #     if len(_report_schedules) > 0:
+    #         report_schedules[report.name]=_report_schedules
+    # print(report_schedules)
+    # context = {
+    #     'reports': reports,
+    #     'report_schedules':report_schedules
+    # }
+    # return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render({}, request))
 
-def download_reports(request):
-    try:
-        filename=f"Dope Deals Report.xlsx"
-        global_workbook = Workbook(filename)
-        print(request.POST)
-        for report_id in request.POST.getlist('download_reports[]'):
-            report = Report.objects.get(id=report_id)
-            if ReportHistory.objects.filter(report=report)[0] is  None:
-                print('running a new report')
-                run_report_task(report)
-                # global_workbook.sheets[report.short_name]=ReportHistory.objects.filter(report=report).order_by('-id')[0].data
-                global_workbook.build_csv_sheet(report.short_name,json.loads(ReportHistory.objects.filter(report=report).order_by('-id')[0].data))
-                ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
-            else:
-                print('using the existing report')
-                # global_workbook.sheets[report.short_name]=ReportHistory.objects.filter(report=report).order_by('-id')[0].data
-                global_workbook.build_csv_sheet(report.short_name, json.loads(ReportHistory.objects.filter(report=report).order_by('-id')[0].data))
-
-            print(report)
-        global_workbook.write_workbook()
-        template = loader.get_template('reports/index.html')
-        reports= Report.objects.all().order_by('name')
-        # print(reports)
-        context = {
-            'reports': reports,
-        }
-        data= open(filename, 'rb')
-        os.remove(filename)
-        return FileResponse(data)
-    except Exception as e:
-        messages.error(request, traceback.format_exc())
-        return HttpResponseRedirect("/reports/")
+# def download_reports(request):
+#     try:
+#         filename=f"Dope Deals Report.xlsx"
+#         global_workbook = Workbook(filename)
+#         print(request.POST)
+#         for report_id in request.POST.getlist('download_reports[]'):
+#             report = Report.objects.get(id=report_id)
+#             if ReportHistory.objects.filter(report=report)[0] is  None:
+#                 print('running a new report')
+#                 run_report_task(report)
+#                 # global_workbook.sheets[report.short_name]=ReportHistory.objects.filter(report=report).order_by('-id')[0].data
+#                 global_workbook.build_csv_sheet(report.short_name,json.loads(ReportHistory.objects.filter(report=report).order_by('-id')[0].data))
+#                 ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
+#             else:
+#                 print('using the existing report')
+#                 # global_workbook.sheets[report.short_name]=ReportHistory.objects.filter(report=report).order_by('-id')[0].data
+#                 global_workbook.build_csv_sheet(report.short_name, json.loads(ReportHistory.objects.filter(report=report).order_by('-id')[0].data))
+#
+#             print(report)
+#         global_workbook.write_workbook()
+#         template = loader.get_template('reports/index.html')
+#         reports= Report.objects.all().order_by('name')
+#         # print(reports)
+#         context = {
+#             'reports': reports,
+#         }
+#         data= open(filename, 'rb')
+#         os.remove(filename)
+#         return FileResponse(data)
+#     except Exception as e:
+#         messages.error(request, traceback.format_exc())
+#         return HttpResponseRedirect("/reports/")
     # return HttpResponse(template.render(context, request))
 
 def run_report(request, report_id):
@@ -80,34 +81,34 @@ def getjsreport(request, report_id):
     response = {}
     try:
         if report.type=='basic':
-            if len(ReportHistory.objects.filter(report=report)) == 0:
-                run_report_task(report)
-                response = build_tabulator_basic_data(json.loads(ReportHistory.objects.filter(report=report).order_by('-id')[0].data))
-                ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
-            else:
-                response = build_tabulator_basic_data(json.loads(ReportHistory.objects.filter(report=report).order_by('-id')[0].data))
+            # if len(ReportHistory.objects.filter(report=report)) == 0:
+            #     run_report_task(report)
+            #     response = build_tabulator_basic_data(json.loads(ReportHistory.objects.filter(report=report).order_by('-id')[0].data))
+            #     ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
+            # else:
+            response = build_tabulator_basic_data(run_report_task(report))
             response = {'message': response, 'status':'success'}
         if report.type=='line':
-            if len(ReportHistory.objects.filter(report=report)) == 0:
-                run_report_task(report)
-                response = build_chartjs_line_data(ReportHistory.objects.filter(report=report))
-                ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
-            else:
-                response = build_chartjs_line_data(ReportHistory.objects.filter(report=report))
+            # if len(ReportHistory.objects.filter(report=report)) == 0:
+            run_report_task(report)
+            response = build_chartjs_line_data(run_report_task(report))
+                # ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
+            # else:
+            #     response = build_chartjs_line_data(ReportHistory.objects.filter(report=report))
         if report.type=='pie':
-            if len(ReportHistory.objects.filter(report=report)) == 0:
-                run_report_task(report)
-                response = build_chartjs_pie_data(ReportHistory.objects.filter(report=report).order_by('-id')[0])
-                ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
-            else:
-                response = build_chartjs_pie_data(ReportHistory.objects.filter(report=report).order_by('-id')[0])
+            # if len(ReportHistory.objects.filter(report=report)) == 0:
+            run_report_task(report)
+            response = build_chartjs_pie_data(run_report_task(report))
+            # ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
+            # else:
+            #     response = build_chartjs_pie_data(ReportHistory.objects.filter(report=report).order_by('-id')[0])
         if report.type=='bar':
-            if len(ReportHistory.objects.filter(report=report)) ==0:
-                run_report_task(report)
-                response= build_chartjs_bar_data(ReportHistory.objects.filter(report=report).order_by('-id')[0])
-                ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
-            else:
-                response= build_chartjs_bar_data(ReportHistory.objects.filter(report=report).order_by('-id')[0])
+            # if len(ReportHistory.objects.filter(report=report)) ==0:
+            #     run_report_task(report)
+            response= build_chartjs_bar_data(run_report_task(report))
+                # ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
+            # else:
+            #     response= build_chartjs_bar_data(ReportHistory.objects.filter(report=report).order_by('-id')[0])
     except Exception as e:
         # import traceback
 
@@ -194,27 +195,27 @@ def get_report(request, report_id):
     return HttpResponse(template.render(context, request))
     pass
 
-def view_actions(request, report_id):
-    template = loader.get_template('reports/view_actions.html')
-    report = Report.objects.get(id=report_id)
-    context = {'report_actions': ReportAction.objects.filter(report=report).order_by('-creation_date'),
-               'report': report}
-    return HttpResponse(template.render(context, request))
+# def view_actions(request, report_id):
+#     template = loader.get_template('reports/view_actions.html')
+#     report = Report.objects.get(id=report_id)
+#     context = {'report_actions': ReportAction.objects.filter(report=report).order_by('-creation_date'),
+#                'report': report}
+#     return HttpResponse(template.render(context, request))
 
 
-def view_action_history(request, report_id, action_id):
-    template = loader.get_template('reports/view_action_history.html')
-    report = Report.objects.get(id=report_id)
-    context = {'report_action_histories': ReportActionHistory.objects.filter(report_action=ReportAction.objects.get(id=action_id)).order_by('-creation_date'),
-               'report': report}
-    return HttpResponse(template.render(context, request))
+# def view_action_history(request, report_id, action_id):
+#     template = loader.get_template('reports/view_action_history.html')
+#     report = Report.objects.get(id=report_id)
+#     context = {'report_action_histories': ReportActionHistory.objects.filter(report_action=ReportAction.objects.get(id=action_id)).order_by('-creation_date'),
+#                'report': report}
+#     return HttpResponse(template.render(context, request))
 
-def view_action_result(request, report_id, history_id):
-    template = loader.get_template('reports/view_action_result.html')
-    report = Report.objects.get(id=report_id)
-    context = {'action_result': ReportActionHistory.objects.get(id=history_id),
-               'report': report}
-    return HttpResponse(template.render(context, request))
+# def view_action_result(request, report_id, history_id):
+#     template = loader.get_template('reports/view_action_result.html')
+#     report = Report.objects.get(id=report_id)
+#     context = {'action_result': ReportActionHistory.objects.get(id=history_id),
+#                'report': report}
+#     return HttpResponse(template.render(context, request))
 
 # def create_report_history(request, report_id):
 #     # =

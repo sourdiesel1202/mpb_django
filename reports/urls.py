@@ -14,6 +14,6 @@ urlpatterns = [
     # path('<int:report_id>/getjsreport_history_list', views.getjsreport_history_list, name='getjsreport_history_list'),
     # path('<int:report_id>/getjsreport_history/<int:history_id>', views.getjsreport_history, name='getjsreport'),
     path('<int:report_id>/run', views.run_report, name='run_report'),
-    path('download_reports/', views.download_reports, name='download_reports'),
+    # path('download_reports/', views.download_reports, name='download_reports'),
     # path('<int:report_id>/create_report_history/', views.create_report_history, name='create_report_history'),
 ]
