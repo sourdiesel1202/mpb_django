@@ -93,7 +93,7 @@ def build_chartjs_line_data(report_histories):
     #     datasets.append(d)
     # return {"datasets":datasets, "labels":labels}
 
-def run_report(report):
+def run_report(report, sql_kwargs={}):
     # mysql_conn = MySQLConnector(Connection.objects.get(name=report.connection.name))
     # mysql_conn.open_connection()
     error = False
@@ -104,8 +104,12 @@ def run_report(report):
             # query = """
             #     select distinct timespan_multiplier, timespan from history_tickerhistory
             #     """
-            print(report.code)
-            cursor.execute(report.code)
+            sql = report.code
+            for k,v in sql_kwargs.items():
+                sql = sql.replace(f'|{k}|', v)
+            cursor.execute(sql)
+            print(sql)
+            print(sql_kwargs)
             # cursor.execute(sql)
             results = []
             results.append([row[0] for row in cursor.description])

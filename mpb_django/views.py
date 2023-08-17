@@ -31,7 +31,7 @@ def index(request):
     #         timespans.append({'timespan_multiplier':row[0],'timespan':row[1]})
     #     # all_count, yes_count = row
     context = {
-        "timeframes":time_frames
+
     }
     return HttpResponse(template.render(context, request))
 

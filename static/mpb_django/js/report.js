@@ -37,7 +37,7 @@ function build_tabulator_table(url,tableId){
 //                keys = []
                 _columns = []
                 for (var key in tabledata[0]){
-                    _columns.push({title:key,formatter:"html",field:key,headerFilter:"input",sorter:"string",headerFilterPlaceholder:"enter multiple search queries separated by commas, i.e Avi,Corp,Baker",headerFilterFunc:matchAnyFilter})
+                    _columns.push({title:key,formatter:"html",field:key,headerFilter:"input",sorter:"string",headerFilterPlaceholder:"enter multiple search queries separated by commas",headerFilterFunc:matchAnyFilter})
 //                    keys.push(key);
 //                    console.log(key)
 

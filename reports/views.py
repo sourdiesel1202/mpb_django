@@ -11,6 +11,7 @@ from django.template import loader
 from .classes import  Workbook
 from django.contrib import messages
 from django.http import FileResponse
+from mpb_django.enums import time_frames
 import traceback
 def index(request):
     template = loader.get_template('reports/index.html')
@@ -159,13 +160,59 @@ def getjsreport(request, report_id):
 #     context = {'history': ReportHistory.objects.get(id=history_id), 'report': report}
 #     return HttpResponse(template.render(context, request))
 #     pass
-def get_report(request, report_id):
+def get_timeframe_reportjs(request, report_id, timespan_multiplier, timespan):
     report = Report.objects.get(pk=report_id)
-    context = {"request":request, "report":report}
+    response = {}
     try:
-        if report.type=='basic':
-            template = loader.get_template('reports/basic_report.html')
-            #get latest run if it exists, if not create it
+        if report.type == 'basic':
+            # if len(ReportHistory.objects.filter(report=report)) == 0:
+            #     run_report_task(report)
+            #     response = build_tabulator_basic_data(json.loads(ReportHistory.objects.filter(report=report).order_by('-id')[0].data))
+            #     ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
+            # else:
+            response = build_tabulator_basic_data(run_report_task(report, sql_kwargs={"timespan": timespan, "timespan_multiplier":timespan_multiplier}))
+            response = {'message': response, 'status': 'success'}
+        if report.type == 'line':
+            # if len(ReportHistory.objects.filter(report=report)) == 0:
+            run_report_task(report)
+            response = build_chartjs_line_data(run_report_task(report,sql_kwargs={"timespan": timespan, "timespan_multiplier":timespan_multiplier}))
+            # ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
+            # else:
+            #     response = build_chartjs_line_data(ReportHistory.objects.filter(report=report))
+        if report.type == 'pie':
+            # if len(ReportHistory.objects.filter(report=report)) == 0:
+            run_report_task(report)
+            response = build_chartjs_pie_data(run_report_task(report,sql_kwargs={"timespan": timespan, "timespan_multiplier":timespan_multiplier}))
+            # ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
+            # else:
+            #     response = build_chartjs_pie_data(ReportHistory.objects.filter(report=report).order_by('-id')[0])
+        if report.type == 'bar':
+            # if len(ReportHistory.objects.filter(report=report)) ==0:
+            #     run_report_task(report)
+            response = build_chartjs_bar_data(run_report_task(report,sql_kwargs={"timespan": timespan, "timespan_multiplier":timespan_multiplier}))
+            # ReportHistory.objects.filter(report=report).order_by('-id')[0].delete()
+            # else:
+            #     response= build_chartjs_bar_data(ReportHistory.objects.filter(report=report).order_by('-id')[0])
+    except Exception as e:
+        # import traceback
+
+        response = {'response': 'error', 'message': traceback.format_exc()}
+
+    # print(response)
+
+    return JsonResponse(response, content_type='application/javascript')
+def get_timeframe_report(request, report_id, timespan_multiplier, timespan):
+    report = Report.objects.get(pk=report_id)
+    context = {"request": request,
+               "report": report,
+               "timespan": timespan,
+               "timespan_multiplier": timespan_multiplier
+
+               }
+    try:
+        if report.type == 'basic':
+            template = loader.get_template('reports/timeframe_report.html')
+            # get latest run if it exists, if not create it
 
             # report_history = ReportHistory.objects.filter(report=report).order_by('-id')
             # if len(report_history) == 0:
@@ -179,21 +226,57 @@ def get_report(request, report_id):
             # else:
             #     context['rows'] = json.loads(report_history[0].data)
             #     context['last_refresh'] = str(report_history[0].creation_date)
-        # latestReportHistory
+            # latestReportHistory
             print(report.name)
-        if report.type=='bar':
+        if report.type == 'bar':
             template = loader.get_template('reports/bar_report.html')
-        if report.type=='pie':
+        if report.type == 'pie':
             template = loader.get_template('reports/pie_report.html')
-        if report.type=='line':
+        if report.type == 'line':
             template = loader.get_template('reports/line_report.html')
     except Exception as e:
         print(str(e))
     # if report.type == 'line':
 
-        # context = build_chartjs_line_dataset(ReportHistory.objects.filter(report=report))
+    # context = build_chartjs_line_dataset(ReportHistory.objects.filter(report=report))
     return HttpResponse(template.render(context, request))
     pass
+def get_report(request, report_id):
+    return  get_timeframe_report(request, report_id,time_frames[0]['timespan_multiplier'] ,time_frames[0]['timespan'])
+    # report = Report.objects.get(pk=report_id)
+    # context = {"request":request, "report":report}
+    # try:
+    #     if report.type=='basic':
+    #         template = loader.get_template('reports/basic_report.html')
+    #         #get latest run if it exists, if not create it
+    #
+    #         # report_history = ReportHistory.objects.filter(report=report).order_by('-id')
+    #         # if len(report_history) == 0:
+    #         #     #need to run one adhoc
+    #         #     run_report_task(report)
+    #         #     report_history = ReportHistory.objects.filter(report=report).order_by('-id')[0]
+    #         #     context['rows'] = json.loads(report_history.data)
+    #         #     context['last_refresh'] = str(datetime.now())
+    #         #     report_history.delete() #cleanup
+    #         #
+    #         # else:
+    #         #     context['rows'] = json.loads(report_history[0].data)
+    #         #     context['last_refresh'] = str(report_history[0].creation_date)
+    #     # latestReportHistory
+    #         print(report.name)
+    #     if report.type=='bar':
+    #         template = loader.get_template('reports/bar_report.html')
+    #     if report.type=='pie':
+    #         template = loader.get_template('reports/pie_report.html')
+    #     if report.type=='line':
+    #         template = loader.get_template('reports/line_report.html')
+    # except Exception as e:
+    #     print(str(e))
+    # # if report.type == 'line':
+    #
+    #     # context = build_chartjs_line_dataset(ReportHistory.objects.filter(report=report))
+    # return HttpResponse(template.render(context, request))
+    # pass
 
 # def view_actions(request, report_id):
 #     template = loader.get_template('reports/view_actions.html')

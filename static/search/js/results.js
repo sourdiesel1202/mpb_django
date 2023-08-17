@@ -154,7 +154,7 @@ try {
                             $.each(tabledata[key][0], function( k, v ) {
 //                                console.log( "Key: " + k + ", Value: " + v );
                                 var key=k
-                               _columns.push({title:key,formatter:"html",field:key,headerFilter:"input",sorter:"string",headerFilterPlaceholder:"enter multiple search queries separated by commas, i.e Avi,Corp,Baker",headerFilterFunc:matchAnyFilter})
+                               _columns.push({title:key,formatter:"html",field:key,headerFilter:"input",sorter:"string",headerFilterPlaceholder:"enter multiple search queries separated by commas",headerFilterFunc:matchAnyFilter})
 
                             });
                             if (document.getElementById("chillen"+String(count)+"_rowcount") == null){
