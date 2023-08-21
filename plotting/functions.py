@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 # import pandas as pd
 
 # import s3
-from history.functions import load_ticker_history_pd_frame, load_ticker_history_cached
+from history.functions import load_ticker_history_pd_frame, load_ticker_history,load_contract_history
 from plotting.indicators import load_macd, load_sma, load_dmi_adx, load_rsi,load_support_resistance
 from plotting.indicators import load_dmi_adx
 from plotting.indicators import  load_death_cross, load_golden_cross, determine_death_cross_alert_type,determine_golden_cross_alert_type, did_golden_cross_alert, did_death_cross_alert
@@ -11,7 +11,12 @@ from mpb_django.functions import load_module_config
 def build_ticker_charts(connection, ticker,timespan, timespan_multiplier):
     module_config = load_module_config(f"{timespan_multiplier}{timespan}mpb")
     #ok so first we need to load the ticker history
-    ticker_history = load_ticker_history_cached(ticker, timespan, timespan_multiplier,connection)
+    ticker_history = load_ticker_history(ticker, timespan, timespan_multiplier,connection)
+    return plot_ticker_with_indicators(ticker, ticker_history,build_indicator_dict(ticker, ticker_history, module_config), module_config) #basically just return our generated html
+def build_contract_charts(connection, ticker,timespan, timespan_multiplier):
+    module_config = load_module_config(f"{timespan_multiplier}{timespan}mpb")
+    #ok so first we need to load the ticker history
+    ticker_history = load_contract_history(ticker, timespan, timespan_multiplier,connection)
     return plot_ticker_with_indicators(ticker, ticker_history,build_indicator_dict(ticker, ticker_history, module_config), module_config) #basically just return our generated html
 def plot_ticker_with_indicators(ticker, ticker_history, indicator_data, module_config):
 
@@ -55,8 +60,8 @@ def plot_ticker_with_indicators(ticker, ticker_history, indicator_data, module_c
             r = r + 1
     figures.insert(0, candle_fig)
     candle_fig.update_layout(xaxis_rangeslider_visible=False, xaxis=dict(type="date"))
-    min_percent=(50/100)*min([x.low for x in ticker_history])
-    max_percent=(50/100)*max([x.low for x in ticker_history])
+    # min_percent=(50/100)*min([x.low for x in ticker_history])
+    # max_percent=(50/100)*max([x.low for x in ticker_history])
     # fig.update_yaxes( type='log')
 
     candle_fig.update_xaxes(rangebreaks=[

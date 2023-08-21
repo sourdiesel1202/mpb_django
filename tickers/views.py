@@ -18,7 +18,9 @@ import traceback
 from django.db import connection
 # from mpb_django.decorators  import requires_password_reset
 # @requires_password_reset
-from plotting.functions import  build_ticker_charts
+from plotting.functions import build_ticker_charts, build_contract_charts
+
+
 def index(request):
     template = loader.get_template('reports/index.html')
     context = {
@@ -33,5 +35,18 @@ def view_ticker_chart(request, timespan_multiplier, timespan, ticker):
 
         context = {
             "dashboard_html": build_ticker_charts(connection,ticker, timespan, timespan_multiplier)
+        }
+        return HttpResponse(template.render(context, request))
+
+
+
+def view_contract_chart(request, timespan_multiplier, timespan, contract):
+    # def dashboard(request, timespan_multiplier, timespan):
+        # ok here is where we're gonna do the fuckery to load the dashboard, freaking a dude
+        # hey dumbass, write the report in sql
+        template = loader.get_template('mpb_django/dashboard.html')
+
+        context = {
+            "dashboard_html": build_contract_charts(connection,contract, timespan, timespan_multiplier)
         }
         return HttpResponse(template.render(context, request))

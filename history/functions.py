@@ -25,11 +25,13 @@ class TickerHistory:
         self.volume = volume
         self.timestamp =timestamp
         self.dt = timestamp_to_datetime(timestamp)
-def load_ticker_history_cached(ticker, timespan, timespan_miltiplier, connection):
+def load_ticker_history(ticker, timespan, timespan_miltiplier, connection):
     records =execute_query(connection, f"select open, close, high, low, volume, timestamp from history_tickerhistory where timespan='{timespan}' and timespan_multiplier='{timespan_miltiplier}' and ticker_id=(select id from tickers_ticker where symbol='{ticker}') order by timestamp asc")
     return [TickerHistory(*[float(x) if '.' in x else int(x) for x in records[i]]) for i in range(1, len(records))]
 
-
+def load_contract_history(contract, timespan, timespan_miltiplier, connection):
+    records =execute_query(connection, f"select open, close, high, low, volume, timestamp from history_contracthistory where timespan='{timespan}' and timespan_multiplier='{timespan_miltiplier}' and contract_id=(select id from tickers_contract where symbol='{contract}') order by timestamp asc")
+    return [TickerHistory(*[float(x) if '.' in x else int(x) for x in records[i]]) for i in range(1, len(records))]
 
 
 def load_ticker_history_csv(ticker, ticker_history, convert_to_datetime=False, human_readable=False):

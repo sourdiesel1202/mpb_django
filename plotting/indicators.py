@@ -9,7 +9,7 @@ from functools import partial
 from mpb_django.enums import OrderType
 import datetime
 from zoneinfo import ZoneInfo
-from history.functions import load_ticker_history_pd_frame, load_ticker_history_csv, load_ticker_history_cached
+from history.functions import load_ticker_history_pd_frame, load_ticker_history_csv, load_ticker_history
 from stockstats import wrap
 from mpb_django.enums import *
 from plotting.shape import compare_tickers
@@ -391,7 +391,7 @@ def has_matching_trend_with_ticker(ticker_a, ticker_history_a,ticker_b, ticker_h
     return compare_tickers(ticker_a, ticker_history_a,ticker_b, ticker_history_b, module_config) >= module_config['line_similarity_gt']
 
 def load_ticker_similar_trends(ticker, module_config):
-    ticker_history = load_ticker_history_cached(ticker, module_config)
+    ticker_history = load_ticker_history(ticker, module_config)
     result = []
     # if module_config['logging']:
     print(f"{human_readable_datetime(datetime.datetime.now())}:${ticker}: Performing line comparison of ${ticker}")
@@ -399,7 +399,7 @@ def load_ticker_similar_trends(ticker, module_config):
         try:
             if module_config['logging']:
                 print(f"{human_readable_datetime(datetime.datetime.now())}:${ticker}: Performing line comparison of ${ticker} <==> ${compare_ticker}")
-            similarity = compare_tickers(ticker, ticker_history, compare_ticker, load_ticker_history_cached(compare_ticker, module_config), module_config)
+            similarity = compare_tickers(ticker, ticker_history, compare_ticker, load_ticker_history(compare_ticker, module_config), module_config)
             if similarity >= module_config['line_similarity_gt']:
                 result.append([compare_ticker, similarity])
         except:
